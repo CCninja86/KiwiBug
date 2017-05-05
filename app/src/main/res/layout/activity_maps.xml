@@ -5,4 +5,13 @@
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="nz.kiwidevs.kiwibug.MapsActivity" />
+    tools:context="nz.kiwidevs.kiwibug.MapsActivity">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </LinearLayout>
+
+</fragment>
