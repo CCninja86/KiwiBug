@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -154,6 +155,9 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
         currentLocationMarker = googleMap.addMarker(markerOptions);
+
+        Toast.makeText(getActivity(), "Location Changed", Toast.LENGTH_SHORT).show();
+
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
     }
 
