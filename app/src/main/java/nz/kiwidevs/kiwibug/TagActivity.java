@@ -15,10 +15,7 @@ public class TagActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tag);
 
         nfcUserMsg = (TextView) findViewById(R.id.nfcUserMsg);
-
-
         String userMsg = getIntent().getStringExtra("nfcData");
-
         nfcUserMsg.setText(userMsg);
 
     }

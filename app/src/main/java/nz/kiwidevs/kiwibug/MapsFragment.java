@@ -120,7 +120,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
                     @Override
                     public boolean onMarkerClick(Marker marker) {
                         if(marker.getTitle().equals("Auckland")){
-                            Intent intent = new Intent(getActivity(), TagActivity.class);
+                            Intent intent = new Intent(getActivity(), HintActivity.class);
                             startActivity(intent);
                         }
 

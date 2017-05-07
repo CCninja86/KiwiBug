@@ -9,6 +9,7 @@
     <string name="CongratsMsg">Congratulations!\nYou found the KiwiBug</string>
     <string name="lastFinderText">The last finder left you this message:</string>
     <string name="NoMsgOnTag">Sorry, no message left!</string>
+    <string name="title_activity_hint">HintActivity</string>
 
 
 </resources>
