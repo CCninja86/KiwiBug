@@ -2,6 +2,7 @@ package nz.kiwidevs.kiwibug;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -114,6 +115,18 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
 
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(auckland).zoom(12).build();
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        if(marker.getTitle().equals("Auckland")){
+                            Intent intent = new Intent(getActivity(), TagActivity.class);
+                            startActivity(intent);
+                        }
+
+                        return true;
+                    }
+                });
             }
         });
 
