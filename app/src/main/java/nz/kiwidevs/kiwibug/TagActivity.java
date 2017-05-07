@@ -18,7 +18,7 @@ public class TagActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent){
         super.onNewIntent(intent);
 
-        
+
     }
 
 }
