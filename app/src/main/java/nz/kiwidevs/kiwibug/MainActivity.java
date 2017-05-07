@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -14,11 +15,15 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
+import nz.kiwidevs.kiwibug.utils.NfcUtils;
+
 public class MainActivity extends AppCompatActivity implements MapsFragment.OnFragmentInteractionListener, NewUserFragment.OnFragmentInteractionListener {
 
     private FragmentTransaction fragmentTransaction;
 
     private static final int PERMISSION_FINE_LOCATION = 1;
+
+    private NfcUtils nfcutils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,13 @@ public class MainActivity extends AppCompatActivity implements MapsFragment.OnFr
             permissionExplanation.show();
 
 
+        }
+
+        nfcutils = new NfcUtils(this);
+
+        //No NFC or NFC disabled, close activity
+        if(!nfcutils.setupNfcTagIntent()){
+            finish();
         }
 
 
@@ -78,6 +90,21 @@ public class MainActivity extends AppCompatActivity implements MapsFragment.OnFr
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        nfcutils.enableForegroundDispatch();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+
+        nfcutils.getTagInfoForIntent(intent);
     }
 
     private void startApp(){

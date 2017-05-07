@@ -16,6 +16,7 @@
         android:layout_marginTop="31dp"
         android:text="@string/CongratsMsg"
         android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.Material.Title"
         android:textSize="24sp" />
 
     <TextView
@@ -32,11 +33,13 @@
         android:id="@+id/nfcUserMsg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/lastFinderText"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="17dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:text="@string/NoMsgOnTag"
-        android:textSize="24sp" />
+        android:text="Sorry, no message left!"
+        android:textAlignment="textStart"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        android:textSize="24sp"
+        android:layout_below="@+id/lastFinderText"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

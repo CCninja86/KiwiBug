@@ -6,6 +6,9 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="welcome_text">Welcome to Kiwi Bug.\n\nEnter a username below and then tap the \'Continue\' button</string>
+    <string name="CongratsMsg">Congratulations!\nYou found the KiwiBug</string>
+    <string name="lastFinderText">The last finder left you this message:</string>
+    <string name="NoMsgOnTag">Sorry, no message left!</string>
 
 
 </resources>
