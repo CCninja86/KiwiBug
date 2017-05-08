@@ -48,18 +48,8 @@ public class NdefReaderTask extends AsyncTask<Tag,Void,NdefRecord[]> {
         if(records.length > 0){
             return records;
         }
-//        for(NdefRecord ndefRecord : records){
-//           // if(ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(),NdefRecord.RTD_TEXT)){
-//            if(ndefRecord.getTnf() == NdefRecord.TNF_MIME_MEDIA){
-//                try{
-//                    return readText(ndefRecord);
-//                } catch (UnsupportedEncodingException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-        return null;
 
+        return null;
     }
 
 
