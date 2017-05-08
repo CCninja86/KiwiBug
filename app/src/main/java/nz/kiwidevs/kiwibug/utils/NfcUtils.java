@@ -57,7 +57,7 @@ public class NfcUtils {
 
             String type = intent.getType();
 
-            if ("text/plain".equals(type)) {
+            if ("app/kb".equals(type)) {
 
 
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);

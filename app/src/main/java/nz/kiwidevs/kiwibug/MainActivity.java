@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import nz.kiwidevs.kiwibug.utils.NfcUtils;
 
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements MapsFragment.OnFr
             finish();
         }
 
-
+        nfcutils.getTagInfoForIntent(getIntent());
 
     }
 
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements MapsFragment.OnFr
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-
+        Log.d("Main", "I get executed onNewIntent");
         nfcutils.getTagInfoForIntent(intent);
     }
 

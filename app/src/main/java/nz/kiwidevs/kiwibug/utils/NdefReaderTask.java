@@ -49,7 +49,8 @@ public class NdefReaderTask extends AsyncTask<Tag,Void,String> {
         NdefRecord[] records = ndefMessage.getRecords();
 
         for(NdefRecord ndefRecord : records){
-            if(ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(),NdefRecord.RTD_TEXT)){
+           // if(ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(),NdefRecord.RTD_TEXT)){
+            if(ndefRecord.getTnf() == NdefRecord.TNF_MIME_MEDIA){
                 try{
                     return readText(ndefRecord);
                 } catch (UnsupportedEncodingException e) {
@@ -65,7 +66,7 @@ public class NdefReaderTask extends AsyncTask<Tag,Void,String> {
     private String readText(NdefRecord record) throws UnsupportedEncodingException {
 
         byte[] payload = record.getPayload();
-
+    /*
         // Get the Text Encoding
         String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
 
@@ -77,6 +78,8 @@ public class NdefReaderTask extends AsyncTask<Tag,Void,String> {
 
         // Get the Text
         return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
+        */
+        return new String(payload);
     }
 
 
