@@ -4,8 +4,10 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -52,6 +54,10 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
 
     private Marker currentLocationMarker;
 
+    private LocationManager locationManager;
+
+    private Globals globals;
+
     public MapsFragment() {
         // Required empty public constructor
     }
@@ -88,6 +94,10 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
+
+
+
+        globals = Globals.getInstance();
 
         mapView = (MapView) view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -127,8 +137,24 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
                         return true;
                     }
                 });
+
             }
         });
+
+
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_LOW);
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+
+        Location oldLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, true));
+        globals.setCurrentLocation(oldLocation);
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30, 100, this);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 30, 100, this);
 
         return view;
     }
@@ -173,6 +199,8 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
         Toast.makeText(getActivity(), "Location Changed", Toast.LENGTH_SHORT).show();
 
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+
+        globals.setCurrentLocation(location);
     }
 
     @Override

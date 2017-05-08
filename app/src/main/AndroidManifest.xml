@@ -44,18 +44,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
 
-                <action android:name="android.nfc.action.TAG_DISCOVERED" />
-                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
-                <data android:mimeType="app/kb"/>
-
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".TagActivity"
             android:label="@string/title_activity_tag">
             <intent-filter>
-
+                <action android:name="android.nfc.action.TAG_DISCOVERED" />
+                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+                <data android:mimeType="app/kb"/>
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

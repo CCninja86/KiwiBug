@@ -76,7 +76,7 @@ public class NewUserFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
                 if(editTextUsername.getText().toString().length() <= 20){
-                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("nz.kiwidevs.kiwibug.FIRST_TIME", Context.MODE_PRIVATE);
+                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("nz.kiwidevs.kiwibug.SHARED", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("username", editTextUsername.getText().toString());
                     editor.commit();

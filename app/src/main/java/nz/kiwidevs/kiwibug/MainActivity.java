@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements MapsFragment.OnFr
     }
 
     private void startApp(){
-        SharedPreferences sharedPreferences = this.getSharedPreferences("nz.kiwidevs.kiwibug.FIRST_TIME", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getSharedPreferences("nz.kiwidevs.kiwibug.SHARED", Context.MODE_PRIVATE);
         boolean firstTime = sharedPreferences.getBoolean("first_time", true);
 
         if(firstTime){
