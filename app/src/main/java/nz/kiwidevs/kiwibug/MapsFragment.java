@@ -96,7 +96,6 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
 
 
-
         globals = Globals.getInstance();
 
         mapView = (MapView) view.findViewById(R.id.mapView);
@@ -129,7 +128,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
                 googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        if(marker.getTitle().equals("Auckland")){
+                        if (marker.getTitle().equals("Auckland")) {
                             Intent intent = new Intent(getActivity(), HintActivity.class);
                             startActivity(intent);
                         }
@@ -143,6 +142,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
 
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        globals.setLocationManager(locationManager);
 
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_LOW);
@@ -153,8 +153,8 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
         Location oldLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, true));
         globals.setCurrentLocation(oldLocation);
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30, 100, this);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 30, 100, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
 
         return view;
     }
@@ -181,6 +181,34 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        locationManager.removeUpdates(this);
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            googleMap.setMyLocationEnabled(false);
+        }
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if(googleMap != null){
+                googleMap.setMyLocationEnabled(true);
+            }
+
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+        }
+
+
     }
 
     @Override

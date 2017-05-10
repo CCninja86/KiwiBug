@@ -105,4 +105,15 @@ public class TagActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+    }
+
+    @Override
+    public void onBackPressed(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
 }
