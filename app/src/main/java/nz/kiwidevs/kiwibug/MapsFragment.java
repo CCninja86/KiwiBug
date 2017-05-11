@@ -129,6 +129,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
                     googleMap.setMyLocationEnabled(true);
                 }
 
+
                 LatLng auckland = new LatLng(-36.8590713, 174.6853577);
                 googleMap.addMarker(new MarkerOptions().position(auckland).title("Auckland"));
 
