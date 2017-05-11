@@ -61,8 +61,7 @@
         </activity>
         <activity
             android:name=".HintActivity"
-            android:label="@string/title_activity_hint"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="@string/title_activity_hint"></activity>
     </application>
 
 </manifest>

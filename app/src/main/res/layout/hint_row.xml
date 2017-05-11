@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textViewHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="[Hint]"
+        android:textAlignment="textStart"
+        android:gravity="start"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textViewUserSubmitted"
+        android:layout_width="179dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textViewHint"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="13dp"
+        android:text="[Submitted By]"
+        android:textAlignment="textStart"
+        android:gravity="start"/>
+
+    <TextView
+        android:id="@+id/textViewTimestamp"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textViewUserSubmitted"
+        android:layout_alignBottom="@+id/textViewUserSubmitted"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:text="[Timestamp]"
+        android:textAlignment="textEnd"
+        android:gravity="end"/>
+</RelativeLayout>

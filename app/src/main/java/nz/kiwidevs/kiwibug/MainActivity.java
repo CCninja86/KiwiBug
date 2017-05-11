@@ -18,7 +18,7 @@ import android.util.Log;
 
 import nz.kiwidevs.kiwibug.utils.NfcUtils;
 
-public class MainActivity extends AppCompatActivity implements MapsFragment.OnFragmentInteractionListener, NewUserFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements MapsFragment.OnFragmentInteractionListener, NewUserFragment.OnFragmentInteractionListener, TagDetailsFragment.OnFragmentInteractionListener {
 
     private FragmentTransaction fragmentTransaction;
 
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements MapsFragment.OnFr
     }
 
     @Override
-    public void onFragmentInteraction(String action) {
+    public void onNewUserFragmentInteraction(String action) {
         if(action.equals("continue")){
             MapsFragment mapsFragment = new MapsFragment();
             fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -89,8 +89,16 @@ public class MainActivity extends AppCompatActivity implements MapsFragment.OnFr
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onMapsFragmentInteraction(String tagIdentifier) {
+        Bundle bundle = new Bundle();
+        bundle.putString("Tag ID", tagIdentifier);
 
+        TagDetailsFragment tagDetailsFragment = new TagDetailsFragment();
+        tagDetailsFragment.setArguments(bundle);
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.container, tagDetailsFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -130,7 +138,13 @@ public class MainActivity extends AppCompatActivity implements MapsFragment.OnFr
             MapsFragment mapsFragment = new MapsFragment();
             fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.container, mapsFragment);
+            fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         }
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }

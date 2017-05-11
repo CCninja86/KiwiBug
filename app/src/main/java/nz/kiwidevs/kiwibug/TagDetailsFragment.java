@@ -1,25 +1,27 @@
 package nz.kiwidevs.kiwibug;
 
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ListView;
+
+import com.google.android.gms.maps.MapView;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link NewUserFragment.OnFragmentInteractionListener} interface
+ * {@link TagDetailsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link NewUserFragment#newInstance} factory method to
+ * Use the {@link TagDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NewUserFragment extends android.support.v4.app.Fragment {
+public class TagDetailsFragment extends android.support.v4.app.Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -31,7 +33,11 @@ public class NewUserFragment extends android.support.v4.app.Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public NewUserFragment() {
+    private String tagIdentifier;
+
+    private ProgressDialog progressDialog;
+
+    public TagDetailsFragment() {
         // Required empty public constructor
     }
 
@@ -41,11 +47,11 @@ public class NewUserFragment extends android.support.v4.app.Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment NewUserFragment.
+     * @return A new instance of fragment TagDetailsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NewUserFragment newInstance(String param1, String param2) {
-        NewUserFragment fragment = new NewUserFragment();
+    public static TagDetailsFragment newInstance(String param1, String param2) {
+        TagDetailsFragment fragment = new TagDetailsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -66,37 +72,24 @@ public class NewUserFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_new_user, container, false);
+        View view = inflater.inflate(R.layout.fragment_tag_details, container, false);
 
-        final EditText editTextUsername = (EditText) view.findViewById(R.id.editTextUsername);
-        Button btnContinue = (Button) view.findViewById(R.id.btnContinue);
+        getActivity().setTitle("Tag Details");
 
+        Bundle bundle = getArguments();
+        tagIdentifier = bundle.getString("Tag ID");
 
-        btnContinue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(editTextUsername.getText().toString().length() <= 20){
-                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("nz.kiwidevs.kiwibug.SHARED", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("username", editTextUsername.getText().toString());
-                    editor.commit();
-
-                    mListener.onNewUserFragmentInteraction("continue");
-                }
-            }
-        });
-
-
-
+        MapView mapView = (MapView) view.findViewById(R.id.mapViewTagRoute);
+        ListView listViewLocationHistory = (ListView) view.findViewById(R.id.listViewTagLocationHistory);
 
 
         return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(String action) {
+    public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onNewUserFragmentInteraction(action);
+            mListener.onFragmentInteraction(uri);
         }
     }
 
@@ -129,6 +122,6 @@ public class NewUserFragment extends android.support.v4.app.Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onNewUserFragmentInteraction(String action);
+        void onFragmentInteraction(Uri uri);
     }
 }

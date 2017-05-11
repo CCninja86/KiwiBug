@@ -8,13 +8,13 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -95,8 +95,18 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
 
+        getActivity().setTitle("Locate Tags");
 
         globals = Globals.getInstance();
+
+        Button buttonHints = (Button) view.findViewById(R.id.buttonHints);
+        buttonHints.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), HintActivity.class);
+                startActivity(intent);
+            }
+        });
 
         mapView = (MapView) view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -111,7 +121,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
 
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
-            public void onMapReady(GoogleMap map) {
+            public void onMapReady(final GoogleMap map) {
                 googleMap = map;
 
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -128,11 +138,8 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
                 googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        if (marker.getTitle().equals("Auckland")) {
-                            Intent intent = new Intent(getActivity(), HintActivity.class);
-                            startActivity(intent);
-                        }
-
+                        // Launch TagDetails Fragment via callback to MainActivity (need to pass data: Marker Title), thus a Fragment should be used)
+                        mListener.onMapsFragmentInteraction(marker.getTitle());
                         return true;
                     }
                 });
@@ -160,9 +167,9 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(String tagIdentifier) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onMapsFragmentInteraction(tagIdentifier);
         }
     }
 
@@ -207,8 +214,6 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
         }
-
-
     }
 
     @Override
@@ -259,6 +264,6 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onMapsFragmentInteraction(String tagIdentifier);
     }
 }
