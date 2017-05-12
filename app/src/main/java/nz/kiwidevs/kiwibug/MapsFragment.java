@@ -27,6 +27,9 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.reflect.TypeToken;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 
 /**
@@ -37,7 +40,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * Use the {@link MapsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapsFragment extends android.support.v4.app.Fragment implements LocationListener {
+public class MapsFragment extends android.support.v4.app.Fragment implements LocationListener, LocationHistoryCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -129,12 +132,28 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
                     googleMap.setMyLocationEnabled(true);
                 }
 
+                final TagLocationHelper tagLocationHelper = new TagLocationHelper();
 
-                LatLng auckland = new LatLng(-36.8590713, 174.6853577);
-                googleMap.addMarker(new MarkerOptions().position(auckland).title("Auckland"));
+                Ion.with(getActivity())
+                        .load("netweb.bplaced.net/kiwibug/api.php?action=getUniqueIdentifiers")
+                        .as(new TypeToken<String[]>(){})
+                        .setCallback(new FutureCallback<String[]>() {
+                            @Override
+                            public void onCompleted(Exception e, String[] uniqueIDs) {
+                                for(String tagID : uniqueIDs){
+                                    tagLocationHelper.loadLoactionHistory(getActivity(), tagID);
+                                }
+                            }
+                        });
 
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(auckland).zoom(12).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+
+
+//                LatLng auckland = new LatLng(-36.8590713, 174.6853577);
+//                googleMap.addMarker(new MarkerOptions().position(auckland).title("Auckland"));
+
+//                CameraPosition cameraPosition = new CameraPosition.Builder().target(auckland).zoom(12).build();
+//                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
                 googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
@@ -250,6 +269,13 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    @Override
+    public void locationHistoryDownloadComplete(LocationHistory locationHistory) {
+        LatLng lastKnownLocation = locationHistory.getLastKnownLocation();
+        googleMap.addMarker(new MarkerOptions().position(lastKnownLocation).title(locationHistory.getTagID()));
+        Toast.makeText(getActivity(), "New Tag Discovered", Toast.LENGTH_SHORT).show();
     }
 
 

@@ -15,7 +15,7 @@ import java.util.TreeMap;
 public class LocationHistory {
 
     private String tagID;
-    private Map<String, LatLng> locationHistoryMap;
+    private Map<String, LatLng> locationHistory;
 
     public LocationHistory(String tagID){
 
@@ -30,17 +30,34 @@ public class LocationHistory {
     }
 
     public Map<String, LatLng> getLocationHistory() {
-        return locationHistoryMap;
+        return locationHistory;
     }
 
-    public void setLocationHistory(Activity context) {
-        
+    public void setLocationHistory(Map<String, LatLng> locationHistory) {
+        this.locationHistory = locationHistory;
     }
 
     public Set<Map.Entry<String, LatLng>> getChronologicalLocationHistory(){
-        TreeMap<String, LatLng> sorted = new TreeMap<>(locationHistoryMap);
+        TreeMap<String, LatLng> sorted = new TreeMap<>(locationHistory);
         Set<Map.Entry<String, LatLng>> mappings = sorted.entrySet();
 
         return mappings;
+    }
+
+    public LatLng getLastKnownLocation(){
+        Set<Map.Entry<String, LatLng>> chronologicalHistory = getChronologicalLocationHistory();
+        LatLng lastKnownLocation = null;
+        int counter = 0;
+
+
+        for(Map.Entry<String, LatLng> entry : chronologicalHistory){
+            if(counter == chronologicalHistory.size() - 1){
+                lastKnownLocation = entry.getValue();
+            }
+
+            counter++;
+        }
+
+        return lastKnownLocation;
     }
 }
