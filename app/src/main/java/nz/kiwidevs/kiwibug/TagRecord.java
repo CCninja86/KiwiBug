@@ -64,4 +64,16 @@ public class TagRecord {
     public void setTagID(String tagID) {
         TagID = tagID;
     }
+
+    @Override
+    public String toString() {
+        return "TagRecord{" +
+                "ID=" + ID +
+                ", lat=" + lat +
+                ", lng=" + lng +
+                ", TagTime='" + TagTime + '\'' +
+                ", username='" + username + '\'' +
+                ", TagID='" + TagID + '\'' +
+                '}';
+    }
 }

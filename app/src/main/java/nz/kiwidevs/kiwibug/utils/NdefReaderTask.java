@@ -11,13 +11,13 @@ import android.os.AsyncTask;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 
-import nz.kiwidevs.kiwibug.TagActivity;
+import nz.kiwidevs.kiwibug.TagFoundActivity;
 
 /**
  * Created by Michael on 07.05.2017.
  */
 
-public class NdefReaderTask extends AsyncTask<Tag,Void,NdefRecord[]> {
+public class NdefReaderTask extends AsyncTask<Tag,Void,String> {
 
     WeakReference<Activity> mWeakActivity;
 
@@ -33,10 +33,10 @@ public class NdefReaderTask extends AsyncTask<Tag,Void,NdefRecord[]> {
      * @return Content of the tag
      */
     @Override
-    protected NdefRecord[] doInBackground(Tag... params) {
-        Tag data = params[0];
+    protected String doInBackground(Tag... params) {
+        Tag tag = params[0];
 
-        Ndef ndef = Ndef.get(data);
+        Ndef ndef = Ndef.get(tag);
 
         if(ndef == null){
             return null;
@@ -45,35 +45,38 @@ public class NdefReaderTask extends AsyncTask<Tag,Void,NdefRecord[]> {
         NdefMessage ndefMessage = ndef.getCachedNdefMessage();
         NdefRecord[] records = ndefMessage.getRecords();
 
-        if(records.length > 0){
-            return records;
+        for(NdefRecord ndefRecord : records){
+           // if(ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(),NdefRecord.RTD_TEXT)){
+            if(ndefRecord.getTnf() == NdefRecord.TNF_MIME_MEDIA){
+                try{
+                    return readText(ndefRecord);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-
         return null;
+
     }
 
 
     private String readText(NdefRecord record) throws UnsupportedEncodingException {
 
         byte[] payload = record.getPayload();
+    /*
+        // Get the Text Encoding
+        String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
 
-        String string = new String(payload);
+        // Get the Language Code
+        int languageCodeLength = payload[0] & 0063;
 
-        if(!string.equals("Hello KiwiBug")){
-            // Get the Text Encoding
-            String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
+        // String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
+        // e.g. "en"
 
-            // Get the Language Code
-            int languageCodeLength = payload[0] & 0063;
-
-            String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
-            // e.g. "en"
-
-            // Get the Text
-            string = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
-        }
-
-        return string;
+        // Get the Text
+        return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
+        */
+        return new String(payload);
     }
 
 
@@ -83,30 +86,14 @@ public class NdefReaderTask extends AsyncTask<Tag,Void,NdefRecord[]> {
      NFC Tag has been read, update the UI from here
 
      **/
-    protected void onPostExecute(NdefRecord[] records) {
-        if(records != null){
-            boolean correctType = false;
-            String message = "";
+    protected void onPostExecute(String result) {
+        if(result != null){
 
-            try {
-                if(readText(records[0]).equals("Hello KiwiBug")){
-                    correctType = true;
-                }
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            Intent myIntent = new Intent(mWeakActivity.get(), TagFoundActivity.class);
+            myIntent.putExtra("nfcData", result); //Optional parameters
+            mWeakActivity.get().startActivity(myIntent);
 
-            if(correctType){
-                try {
-                    message = readText(records[1]);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
 
-                Intent myIntent = new Intent(mWeakActivity.get(), TagActivity.class);
-                myIntent.putExtra("nfcData", message); //Optional parameters
-                mWeakActivity.get().startActivity(myIntent);
-            }
         }
     }
 }

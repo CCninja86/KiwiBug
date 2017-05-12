@@ -129,12 +129,12 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
                     googleMap.setMyLocationEnabled(true);
                 }
 
+                //Lets use the approximate center of NZ and then zoom in to the users location
+                LatLng nelson = new LatLng(-41.270632, 173.283965);
+                googleMap.addMarker(new MarkerOptions().position(nelson).title("Nelson"));
 
-                LatLng auckland = new LatLng(-36.8590713, 174.6853577);
-                googleMap.addMarker(new MarkerOptions().position(auckland).title("Auckland"));
-
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(auckland).zoom(12).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(nelson).zoom(5).build();
+                googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
                 googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
@@ -230,9 +230,9 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
         currentLocationMarker = googleMap.addMarker(markerOptions);
 
-        Toast.makeText(getActivity(), "Location Changed", Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getActivity(), "Location Changed", Toast.LENGTH_SHORT).show();
 
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+        //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
 
         globals.setCurrentLocation(location);
     }

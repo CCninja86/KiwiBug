@@ -1,16 +1,37 @@
 package nz.kiwidevs.kiwibug;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.reflect.TypeToken;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 /**
@@ -36,6 +57,10 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
     private String tagIdentifier;
 
     private ProgressDialog progressDialog;
+
+    private GoogleMap googleMap;
+
+    private int polylineColour = Color.BLUE;
 
     public TagDetailsFragment() {
         // Required empty public constructor
@@ -81,6 +106,67 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
 
         MapView mapView = (MapView) view.findViewById(R.id.mapViewTagRoute);
         ListView listViewLocationHistory = (ListView) view.findViewById(R.id.listViewTagLocationHistory);
+
+        mapView.onCreate(savedInstanceState);
+
+        mapView.onResume();
+
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(final GoogleMap map) {
+                googleMap = map;
+
+
+                //Lets use the approximate center of NZ and then zoom in to the users location
+                LatLng nelson = new LatLng(-41.270632, 173.283965);
+                googleMap.addMarker(new MarkerOptions().position(nelson).title("Nelson"));
+
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(nelson).zoom(5).build();
+                googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+
+
+            }
+        });
+
+
+
+        Ion.with(this)
+                .load("http://netweb.bplaced.net/kiwibug/api.php?action=getTagData&id=test")
+                .as(new TypeToken<TagRecord[]>(){})
+                .setCallback(new FutureCallback<TagRecord[]>() {
+                    @Override
+                    public void onCompleted(Exception e, TagRecord[] tagRecordArray) {
+                        if(progressDialog != null && progressDialog.isShowing()){
+                            progressDialog.dismiss();
+                            progressDialog = null;
+                        }
+                        PolylineOptions poly = new PolylineOptions().color(polylineColour).width(5);
+
+                        ArrayList<TagRecord> tagRecordArrayList = new ArrayList<>();
+
+                        for(TagRecord tagRecord : tagRecordArray){
+                            tagRecordArrayList.add(tagRecord);
+
+                            LatLng currentMarkerLatLng = new LatLng(tagRecord.getLatitude(),tagRecord.getLongitude());
+                            googleMap.addMarker(new MarkerOptions().position(currentMarkerLatLng).title(tagRecord.getID() + " " + tagRecord.getTagID()));
+
+                            //Log.d("TagDetails",tagRecord.getID() + " " + tagRecord.getTagTime());
+
+                            poly.add(currentMarkerLatLng);
+                        }
+
+                        googleMap.addPolyline(poly);
+
+                    }
+                });
+
+
+
+
+
+          //
+
 
 
         return view;

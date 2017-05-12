@@ -56,7 +56,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TagActivity"
+            android:name=".TagFoundActivity"
             android:label="@string/title_activity_tag">
         </activity>
         <activity
