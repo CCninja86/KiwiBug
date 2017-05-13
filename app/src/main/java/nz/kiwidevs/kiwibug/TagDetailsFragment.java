@@ -151,7 +151,7 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
 
         //@TODO: Pass TagID to TagDetailsFragment and replace ID in URL
         Ion.with(this)
-                .load("http://netweb.bplaced.net/kiwibug/api.php?action=getTagData&id=test")
+                .load("http://netweb.bplaced.net/kiwibug/api.php?action=getTagData&id=" + tagIdentifier)
                 .as(new TypeToken<TagRecord[]>(){})
                 .setCallback(new FutureCallback<TagRecord[]>() {
                     @Override

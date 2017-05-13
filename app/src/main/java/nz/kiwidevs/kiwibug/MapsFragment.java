@@ -236,17 +236,6 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
 
     @Override
     public void onLocationChanged(Location location) {
-        if(currentLocationMarker != null){
-            currentLocationMarker.remove();
-        }
-
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-        currentLocationMarker = googleMap.addMarker(markerOptions);
-
        // Toast.makeText(getActivity(), "Location Changed", Toast.LENGTH_SHORT).show();
 
         //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
@@ -299,7 +288,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
                         TagRecord currentTagLocation = tagRecordArray[0];
 
                         LatLng currentMarkerLatLng = new LatLng(currentTagLocation.getLatitude(),currentTagLocation.getLongitude());
-                        googleMap.addMarker(new MarkerOptions().position(currentMarkerLatLng).title(currentTagLocation.getID() + " " + currentTagLocation.getTagID()));
+                        googleMap.addMarker(new MarkerOptions().position(currentMarkerLatLng).title(currentTagLocation.getTagID()));
 
 
 
