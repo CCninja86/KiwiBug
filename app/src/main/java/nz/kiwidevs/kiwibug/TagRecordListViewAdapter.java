@@ -1,9 +1,6 @@
 package nz.kiwidevs.kiwibug;
 
-import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -75,15 +70,15 @@ public class TagRecordListViewAdapter extends ArrayAdapter<TagRecord> {
 
         if(tag != null){
             TextView textViewTag = (TextView) convertView.findViewById(R.id.textViewTag);
-            TextView textViewTagID = (TextView) convertView.findViewById(R.id.textViewTagId);
+            TextView textViewTagID = (TextView) convertView.findViewById(R.id.textViewUserID);
             TextView textViewTagTime = (TextView) convertView.findViewById(R.id.textViewTagTime);
 
-            if(textViewTag != null){
-                textViewTag.setText("ID:" + tag.getID());
-            }
-
+           if(textViewTag != null){
+                textViewTag.setText("ID:" +  tag.getID());
+                //textViewTag.setText("ID:" + tag.getAddress());
+           }
             if(textViewTagID != null){
-                textViewTagID.setText(tag.getTagID());
+                textViewTagID.setText(tag.getUsername());
             }
 
             if(textViewTagTime != null){
@@ -96,6 +91,14 @@ public class TagRecordListViewAdapter extends ArrayAdapter<TagRecord> {
 
 
         return convertView;
+    }
+
+    public void refreshAdapter(ArrayList<TagRecord> tags){
+
+        this.notifyDataSetChanged();
+
+
+
     }
 
 

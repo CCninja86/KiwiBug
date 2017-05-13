@@ -1,6 +1,7 @@
 package nz.kiwidevs.kiwibug;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,6 +27,9 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.reflect.TypeToken;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 
 /**
@@ -57,6 +60,10 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
     private LocationManager locationManager;
 
     private Globals globals;
+
+    private ProgressDialog progressDialog;
+
+    private String[] allTagIDs;
 
     public MapsFragment() {
         // Required empty public constructor
@@ -164,7 +171,17 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
 
+
+
+        getLatestTags();
+
+
+
+
+
         return view;
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -235,6 +252,59 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
         //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
 
         globals.setCurrentLocation(location);
+    }
+
+
+    public void getLatestTags(){
+
+            Ion.with(this)
+                    .load("http://netweb.bplaced.net/kiwibug/api.php?action=getUniqueIdentifiers")
+                    .as(new TypeToken<String[]>(){})
+                    .setCallback(new FutureCallback<String[]>() {
+                        @Override
+                        public void onCompleted(Exception e, String[] tagIDArray) {
+
+                            if(progressDialog != null && progressDialog.isShowing()){
+                                progressDialog.dismiss();
+                                progressDialog = null;
+                            }
+
+                            for(String currentTagID : tagIDArray){
+                                addLastTagLocation(currentTagID);
+                            }
+
+                        }
+                    });
+
+
+    }
+
+    /**
+     * Adds a marker for the latest known location for the specified TagID on the map
+     * @param TagID
+     */
+    public void addLastTagLocation(String TagID){
+        Ion.with(this)
+                .load("http://netweb.bplaced.net/kiwibug/api.php?action=getCurrentLocation&id=" + TagID)
+                .as(new TypeToken<TagRecord[]>(){})
+                .setCallback(new FutureCallback<TagRecord[]>() {
+                    @Override
+                    public void onCompleted(Exception e, TagRecord[] tagRecordArray) {
+
+                        if(progressDialog != null && progressDialog.isShowing()){
+                            progressDialog.dismiss();
+                            progressDialog = null;
+                        }
+
+                        TagRecord currentTagLocation = tagRecordArray[0];
+
+                        LatLng currentMarkerLatLng = new LatLng(currentTagLocation.getLatitude(),currentTagLocation.getLongitude());
+                        googleMap.addMarker(new MarkerOptions().position(currentMarkerLatLng).title(currentTagLocation.getID() + " " + currentTagLocation.getTagID()));
+
+
+
+                    }
+                });
     }
 
     @Override

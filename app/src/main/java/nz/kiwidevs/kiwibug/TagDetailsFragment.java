@@ -4,9 +4,17 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -21,6 +29,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -33,6 +42,8 @@ import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import nz.kiwidevs.kiwibug.utils.ReverseGeocodingTask;
 
 
 /**
@@ -66,6 +77,9 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
     private int polylineColour = Color.BLUE;
 
     private ListView listViewLocationHistory;
+
+    private TagRecordListViewAdapter adapter;
+    private  ArrayList<TagRecord> tagRecordArrayList = new ArrayList<>();
 
     public TagDetailsFragment() {
         // Required empty public constructor
@@ -148,8 +162,6 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
                         }
                         PolylineOptions poly = new PolylineOptions().color(polylineColour).width(5);
 
-                        ArrayList<TagRecord> tagRecordArrayList = new ArrayList<>();
-
                         for(TagRecord tagRecord : tagRecordArray){
                             tagRecordArrayList.add(tagRecord);
 
@@ -159,10 +171,23 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
                             //Log.d("TagDetails",tagRecord.getID() + " " + tagRecord.getTagTime());
 
                             poly.add(currentMarkerLatLng);
+
+                            //Async gecoding task here
+                            new ReverseGeocodingTask(context, tagRecord).execute(currentMarkerLatLng);
+
+
+
                         }
 
+                        setAdapter();
+
+                        //listViewLocationHistory
+                       adapter.refreshAdapter(tagRecordArrayList);
+
+
+
                         googleMap.addPolyline(poly);
-                        setAdapter(tagRecordArrayList);
+
 
                     }
                 });
@@ -182,10 +207,12 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    public void setAdapter(ArrayList<TagRecord> tags){
-        ArrayAdapter adapter = new TagRecordListViewAdapter(context, R.layout.tagrecord_row, tags);
+    public void setAdapter(){
+        adapter = new TagRecordListViewAdapter(context, R.layout.tagrecord_row, tagRecordArrayList);
         listViewLocationHistory.setAdapter(adapter);
     }
+
+
 
 
 
@@ -223,4 +250,8 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+
+
+
 }

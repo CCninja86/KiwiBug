@@ -12,6 +12,7 @@ public class TagRecord {
     private String TagTime;
     private String username;
     private String TagID;
+    private String address;
 
     public TagRecord(){
 
@@ -63,6 +64,14 @@ public class TagRecord {
 
     public void setTagID(String tagID) {
         TagID = tagID;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Override
