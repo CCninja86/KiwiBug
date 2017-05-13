@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -52,6 +53,8 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
     private String mParam1;
     private String mParam2;
 
+    Context context;
+
     private OnFragmentInteractionListener mListener;
 
     private String tagIdentifier;
@@ -61,6 +64,8 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
     private GoogleMap googleMap;
 
     private int polylineColour = Color.BLUE;
+
+    private ListView listViewLocationHistory;
 
     public TagDetailsFragment() {
         // Required empty public constructor
@@ -105,7 +110,7 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
         tagIdentifier = bundle.getString("Tag ID");
 
         MapView mapView = (MapView) view.findViewById(R.id.mapViewTagRoute);
-        ListView listViewLocationHistory = (ListView) view.findViewById(R.id.listViewTagLocationHistory);
+        listViewLocationHistory = (ListView) view.findViewById(R.id.listViewTagLocationHistory);
 
         mapView.onCreate(savedInstanceState);
 
@@ -119,7 +124,7 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
 
                 //Lets use the approximate center of NZ and then zoom in to the users location
                 LatLng nelson = new LatLng(-41.270632, 173.283965);
-                googleMap.addMarker(new MarkerOptions().position(nelson).title("Nelson"));
+
 
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(nelson).zoom(5).build();
                 googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -130,7 +135,7 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
         });
 
 
-
+        //@TODO: Pass TagID to TagDetailsFragment and replace ID in URL
         Ion.with(this)
                 .load("http://netweb.bplaced.net/kiwibug/api.php?action=getTagData&id=test")
                 .as(new TypeToken<TagRecord[]>(){})
@@ -157,15 +162,13 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
                         }
 
                         googleMap.addPolyline(poly);
+                        setAdapter(tagRecordArrayList);
 
                     }
                 });
 
 
 
-
-
-          //
 
 
 
@@ -179,6 +182,14 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
         }
     }
 
+    public void setAdapter(ArrayList<TagRecord> tags){
+        ArrayAdapter adapter = new TagRecordListViewAdapter(context, R.layout.tagrecord_row, tags);
+        listViewLocationHistory.setAdapter(adapter);
+    }
+
+
+
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -188,6 +199,8 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
+        this.context = context;
     }
 
     @Override

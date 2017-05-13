@@ -131,7 +131,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
 
                 //Lets use the approximate center of NZ and then zoom in to the users location
                 LatLng nelson = new LatLng(-41.270632, 173.283965);
-                googleMap.addMarker(new MarkerOptions().position(nelson).title("Nelson"));
+                //googleMap.addMarker(new MarkerOptions().position(nelson).title("Nelson"));
 
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(nelson).zoom(5).build();
                 googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
