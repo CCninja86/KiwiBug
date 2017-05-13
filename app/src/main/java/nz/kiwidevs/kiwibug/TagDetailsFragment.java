@@ -54,7 +54,7 @@ import nz.kiwidevs.kiwibug.utils.ReverseGeocodingTask;
  * Use the {@link TagDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TagDetailsFragment extends android.support.v4.app.Fragment {
+public class TagDetailsFragment extends android.support.v4.app.Fragment implements ReverseGeocodeCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -65,6 +65,7 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
     private String mParam2;
 
     Context context;
+    private TagDetailsFragment tagDetailsFragment;
 
     private OnFragmentInteractionListener mListener;
 
@@ -80,6 +81,7 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
 
     private TagRecordListViewAdapter adapter;
     private  ArrayList<TagRecord> tagRecordArrayList = new ArrayList<>();
+
 
     public TagDetailsFragment() {
         // Required empty public constructor
@@ -113,18 +115,23 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tag_details, container, false);
 
         getActivity().setTitle("Tag Details");
 
+        tagDetailsFragment = this;
+
         Bundle bundle = getArguments();
         tagIdentifier = bundle.getString("Tag ID");
 
         MapView mapView = (MapView) view.findViewById(R.id.mapViewTagRoute);
         listViewLocationHistory = (ListView) view.findViewById(R.id.listViewTagLocationHistory);
+
+        setAdapter();
+
 
         mapView.onCreate(savedInstanceState);
 
@@ -173,16 +180,16 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
                             poly.add(currentMarkerLatLng);
 
                             //Async gecoding task here
-                            new ReverseGeocodingTask(context, tagRecord).execute(currentMarkerLatLng);
+                            new ReverseGeocodingTask(context, tagRecord, tagDetailsFragment).execute(currentMarkerLatLng);
 
 
 
                         }
 
-                        setAdapter();
+
 
                         //listViewLocationHistory
-                       adapter.refreshAdapter(tagRecordArrayList);
+
 
 
 
@@ -234,6 +241,11 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onReverseGeocodeComplete() {
+        adapter.refreshAdapter(tagRecordArrayList);
     }
 
     /**

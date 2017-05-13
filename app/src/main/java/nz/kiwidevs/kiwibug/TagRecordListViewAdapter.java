@@ -74,7 +74,7 @@ public class TagRecordListViewAdapter extends ArrayAdapter<TagRecord> {
             TextView textViewTagTime = (TextView) convertView.findViewById(R.id.textViewTagTime);
 
            if(textViewTag != null){
-                textViewTag.setText("ID:" +  tag.getID());
+                textViewTag.setText("Address:" +  tag.getAddress());
                 //textViewTag.setText("ID:" + tag.getAddress());
            }
             if(textViewTagID != null){

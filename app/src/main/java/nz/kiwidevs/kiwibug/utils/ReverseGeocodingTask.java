@@ -11,11 +11,14 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import nz.kiwidevs.kiwibug.ReverseGeocodeCallback;
 import nz.kiwidevs.kiwibug.TagFoundActivity;
 import nz.kiwidevs.kiwibug.TagRecord;
+import nz.kiwidevs.kiwibug.TagRecordListViewAdapter;
 
 /**
  * Created by Michael on 13.05.2017.
@@ -25,10 +28,12 @@ public class ReverseGeocodingTask extends AsyncTask<LatLng,Void,Address> {
 
     Context context;
     TagRecord tag;
+    ReverseGeocodeCallback reverseGeocodeCallback;
 
-    public ReverseGeocodingTask(Context context, TagRecord tag) {
+    public ReverseGeocodingTask(Context context, TagRecord tag, ReverseGeocodeCallback reverseGeocodeCallback) {
         this.context = context;
         this.tag = tag;
+        this.reverseGeocodeCallback = reverseGeocodeCallback;
     }
 
     @Override
@@ -53,6 +58,7 @@ public class ReverseGeocodingTask extends AsyncTask<LatLng,Void,Address> {
         if(result != null){
 
             tag.setAddress(result.getAddressLine(0));
+            reverseGeocodeCallback.onReverseGeocodeComplete();
 
         }
     }
