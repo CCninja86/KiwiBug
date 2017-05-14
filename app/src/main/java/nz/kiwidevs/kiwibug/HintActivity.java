@@ -1,10 +1,12 @@
 package nz.kiwidevs.kiwibug;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.future.FutureCallback;
@@ -16,6 +18,7 @@ public class HintActivity extends AppCompatActivity {
 
     private ListView listViewHints;
     private ProgressDialog progressDialog;
+    private Activity context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +26,8 @@ public class HintActivity extends AppCompatActivity {
         setContentView(R.layout.activity_hint);
 
         setTitle("Hints");
+
+        context = this;
 
         listViewHints = (ListView) findViewById(R.id.listViewHints);
 
@@ -44,13 +49,18 @@ public class HintActivity extends AppCompatActivity {
                             progressDialog = null;
                         }
 
-                        ArrayList<Hint> hintArrayList = new ArrayList<>();
+                        if(hintsArray.length > 0){
+                            ArrayList<Hint> hintArrayList = new ArrayList<>();
 
-                        for(Hint hint : hintsArray){
-                            hintArrayList.add(hint);
+                            for(Hint hint : hintsArray){
+                                hintArrayList.add(hint);
+                            }
+
+                            setAdapter(hintArrayList);
+                        } else {
+                            Toast.makeText(context, "There are currently no available hints", Toast.LENGTH_LONG).show();
                         }
 
-                        setAdapter(hintArrayList);
                     }
                 });
     }
