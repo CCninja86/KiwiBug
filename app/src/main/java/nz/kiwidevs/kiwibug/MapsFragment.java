@@ -40,7 +40,7 @@ import com.koushikdutta.ion.Ion;
  * Use the {@link MapsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapsFragment extends android.support.v4.app.Fragment implements LocationListener {
+public class MapsFragment extends android.support.v4.app.Fragment implements LocationListener, LocationHistoryCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -135,6 +135,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
                         && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     googleMap.setMyLocationEnabled(true);
                 }
+
 
                 //Lets use the approximate center of NZ and then zoom in to the users location
                 LatLng nelson = new LatLng(-41.270632, 173.283965);
@@ -309,6 +310,13 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    @Override
+    public void locationHistoryDownloadComplete(LocationHistory locationHistory) {
+        LatLng lastKnownLocation = locationHistory.getLastKnownLocation();
+        googleMap.addMarker(new MarkerOptions().position(lastKnownLocation).title(locationHistory.getTagID()));
+        Toast.makeText(getActivity(), "New Tag Discovered", Toast.LENGTH_SHORT).show();
     }
 
 
