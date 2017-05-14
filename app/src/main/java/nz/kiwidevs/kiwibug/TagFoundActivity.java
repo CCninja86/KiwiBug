@@ -1,11 +1,18 @@
 package nz.kiwidevs.kiwibug;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,11 +26,14 @@ public class TagFoundActivity extends AppCompatActivity {
     TextView nfcUserMsg;
     private ProgressDialog progressDialog;
     private Globals globals;
+    private Activity context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tag_found);
+
+        context = this;
 
         globals = Globals.getInstance();
 
@@ -61,7 +71,7 @@ public class TagFoundActivity extends AppCompatActivity {
         String currentTimestamp = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
 
         SharedPreferences sharedPreferences = getSharedPreferences("nz.kiwidevs.kiwibug.SHARED", Context.MODE_PRIVATE);
-        String username = sharedPreferences.getString("username", "anonymous");
+        final String username = sharedPreferences.getString("username", "anonymous");
 
         String tagID = "test";
 
@@ -96,6 +106,71 @@ public class TagFoundActivity extends AppCompatActivity {
         nfcUserMsg = (TextView) findViewById(R.id.nfcUserMsg);
         String userMsg = getIntent().getStringExtra("nfcData");
         nfcUserMsg.setText(userMsg);
+
+        Button btnWriteMessage = (Button) findViewById(R.id.btnWriteTagMessage);
+        btnWriteMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: Write message to NFC tag (record index 1 (second record))
+            }
+        });
+
+        final Button btnSubmitHint = (Button) findViewById(R.id.btnSubmitHint);
+        btnSubmitHint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Submit Hint");
+                builder.setMessage("Enter your hint below");
+
+                final EditText input = new EditText(context);
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+
+                builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String url = "http://netweb.bplaced.net/kiwibug/api.php?action=insertHint&hint=" + input.getText().toString() + "&user=" + username;
+                        url = url.replaceAll(" ", "%20");
+
+                        progressDialog = new ProgressDialog(context);
+                        progressDialog.setMessage("Submitting...");
+                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        progressDialog.setIndeterminate(true);
+                        progressDialog.setCancelable(false);
+                        progressDialog.show();
+
+                        Ion.with(context)
+                                .load(url)
+                                .asString()
+                                .setCallback(new FutureCallback<String>() {
+                                    @Override
+                                    public void onCompleted(Exception e, String result) {
+                                        if(progressDialog != null && progressDialog.isShowing()){
+                                            progressDialog.dismiss();
+                                            progressDialog = null;
+                                        }
+
+                                        if(result.equals("success")){
+                                            Toast.makeText(context, "You submitted a hint to the public hint board", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(context, "Hint was not submitted", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.show();
+            }
+        });
 
     }
 
