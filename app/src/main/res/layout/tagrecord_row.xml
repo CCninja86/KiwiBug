@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textViewTag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:text="[Tag]"
+        android:textAlignment="textStart"
+        android:textSize="18sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/textViewUserID"
+        android:layout_alignStart="@+id/textViewUserID" />
+
+    <TextView
+        android:id="@+id/textViewUserID"
+        android:layout_width="179dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textViewTag"
+        android:layout_marginLeft="11dp"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="13dp"
+        android:gravity="start"
+        android:text="[Username]"
+        android:textAlignment="textStart" />
+
+    <TextView
+        android:id="@+id/textViewTagTime"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textViewUserID"
+        android:layout_alignBottom="@+id/textViewUserID"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:text="[Timestamp]"
+        android:textAlignment="textEnd"
+        android:gravity="end"/>
+
+</RelativeLayout>

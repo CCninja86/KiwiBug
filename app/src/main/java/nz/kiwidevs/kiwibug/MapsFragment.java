@@ -1,6 +1,7 @@
 package nz.kiwidevs.kiwibug;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -60,6 +60,10 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
     private LocationManager locationManager;
 
     private Globals globals;
+
+    private ProgressDialog progressDialog;
+
+    private String[] allTagIDs;
 
     public MapsFragment() {
         // Required empty public constructor
@@ -132,28 +136,13 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
                     googleMap.setMyLocationEnabled(true);
                 }
 
-                final TagLocationHelper tagLocationHelper = new TagLocationHelper();
 
-                Ion.with(getActivity())
-                        .load("netweb.bplaced.net/kiwibug/api.php?action=getUniqueIdentifiers")
-                        .as(new TypeToken<String[]>(){})
-                        .setCallback(new FutureCallback<String[]>() {
-                            @Override
-                            public void onCompleted(Exception e, String[] uniqueIDs) {
-                                for(String tagID : uniqueIDs){
-                                    tagLocationHelper.loadLoactionHistory(getActivity(), tagID);
-                                }
-                            }
-                        });
+                //Lets use the approximate center of NZ and then zoom in to the users location
+                LatLng nelson = new LatLng(-41.270632, 173.283965);
+                //googleMap.addMarker(new MarkerOptions().position(nelson).title("Nelson"));
 
-
-
-
-//                LatLng auckland = new LatLng(-36.8590713, 174.6853577);
-//                googleMap.addMarker(new MarkerOptions().position(auckland).title("Auckland"));
-
-//                CameraPosition cameraPosition = new CameraPosition.Builder().target(auckland).zoom(12).build();
-//                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(nelson).zoom(5).build();
+                googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
                 googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
@@ -183,7 +172,17 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
 
+
+
+        getLatestTags();
+
+
+
+
+
         return view;
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -238,22 +237,64 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
 
     @Override
     public void onLocationChanged(Location location) {
-        if(currentLocationMarker != null){
-            currentLocationMarker.remove();
-        }
+       // Toast.makeText(getActivity(), "Location Changed", Toast.LENGTH_SHORT).show();
 
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-        currentLocationMarker = googleMap.addMarker(markerOptions);
-
-        Toast.makeText(getActivity(), "Location Changed", Toast.LENGTH_SHORT).show();
-
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+        //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
 
         globals.setCurrentLocation(location);
+    }
+
+
+    public void getLatestTags(){
+
+            Ion.with(this)
+                    .load("http://netweb.bplaced.net/kiwibug/api.php?action=getUniqueIdentifiers")
+                    .as(new TypeToken<String[]>(){})
+                    .setCallback(new FutureCallback<String[]>() {
+                        @Override
+                        public void onCompleted(Exception e, String[] tagIDArray) {
+
+                            if(progressDialog != null && progressDialog.isShowing()){
+                                progressDialog.dismiss();
+                                progressDialog = null;
+                            }
+
+                            for(String currentTagID : tagIDArray){
+                                addLastTagLocation(currentTagID);
+                            }
+
+                        }
+                    });
+
+
+    }
+
+    /**
+     * Adds a marker for the latest known location for the specified TagID on the map
+     * @param TagID
+     */
+    public void addLastTagLocation(String TagID){
+        Ion.with(this)
+                .load("http://netweb.bplaced.net/kiwibug/api.php?action=getCurrentLocation&id=" + TagID)
+                .as(new TypeToken<TagRecord[]>(){})
+                .setCallback(new FutureCallback<TagRecord[]>() {
+                    @Override
+                    public void onCompleted(Exception e, TagRecord[] tagRecordArray) {
+
+                        if(progressDialog != null && progressDialog.isShowing()){
+                            progressDialog.dismiss();
+                            progressDialog = null;
+                        }
+
+                        TagRecord currentTagLocation = tagRecordArray[0];
+
+                        LatLng currentMarkerLatLng = new LatLng(currentTagLocation.getLatitude(),currentTagLocation.getLongitude());
+                        googleMap.addMarker(new MarkerOptions().position(currentMarkerLatLng).title(currentTagLocation.getTagID()));
+
+
+
+                    }
+                });
     }
 
     @Override

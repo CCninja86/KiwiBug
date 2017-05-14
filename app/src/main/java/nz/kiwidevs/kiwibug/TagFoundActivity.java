@@ -14,7 +14,7 @@ import com.koushikdutta.ion.Ion;
 
 import java.util.Calendar;
 
-public class TagActivity extends AppCompatActivity {
+public class TagFoundActivity extends AppCompatActivity {
 
     TextView nfcUserMsg;
     private ProgressDialog progressDialog;
@@ -23,7 +23,7 @@ public class TagActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tag);
+        setContentView(R.layout.activity_tag_found);
 
         globals = Globals.getInstance();
 

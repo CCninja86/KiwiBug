@@ -15,7 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by James on 30/11/2015.
+ * Created by James on 12.05.2017.
  */
 public class HintListViewAdapter extends ArrayAdapter<Hint> {
 
