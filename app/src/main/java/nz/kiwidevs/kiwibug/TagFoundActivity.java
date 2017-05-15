@@ -1,21 +1,21 @@
 package nz.kiwidevs.kiwibug;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
@@ -107,16 +107,11 @@ public class TagFoundActivity extends AppCompatActivity {
         String userMsg = getIntent().getStringExtra("nfcData");
         nfcUserMsg.setText(userMsg);
 
-        Button btnWriteMessage = (Button) findViewById(R.id.btnWriteTagMessage);
-        btnWriteMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: Write message to NFC tag (record index 1 (second record))
-            }
-        });
 
-        final Button btnSubmitHint = (Button) findViewById(R.id.btnSubmitHint);
-        btnSubmitHint.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton floatingActionButtonSubmitHint = (FloatingActionButton) findViewById(R.id.btnSubmitHint);
+        FloatingActionButton floatingActionButtonWriteMessage = (FloatingActionButton) findViewById(R.id.btnWriteMessage);
+
+        floatingActionButtonSubmitHint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -171,6 +166,15 @@ public class TagFoundActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+
+        floatingActionButtonWriteMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: Write message to record index 1 (second record) of scanned NFC Tag
+            }
+        });
+
+
 
     }
 
