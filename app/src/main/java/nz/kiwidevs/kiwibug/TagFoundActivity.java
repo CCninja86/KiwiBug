@@ -76,7 +76,7 @@ public class TagFoundActivity extends AppCompatActivity {
         String tagID = "test";
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Updating...");
+        progressDialog.setMessage("Updating Tag Location...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
@@ -96,9 +96,9 @@ public class TagFoundActivity extends AppCompatActivity {
                         }
 
                         if(result.equals("success")){
-                            Toast.makeText(getApplicationContext(), "Updated Successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Tag Location Updated", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getApplicationContext(), "Update Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Failed to update Tag Location", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

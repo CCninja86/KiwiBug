@@ -11,7 +11,9 @@
         android:id="@+id/menuActions"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="bottom|right">
+        android:layout_gravity="bottom|right"
+        app:menu_colorNormal="@color/colorPrimary"
+        app:menu_colorPressed="@color/colorPrimaryDark">
 
 
         <com.github.clans.fab.FloatingActionButton
@@ -19,14 +21,18 @@
             app:fab_label="Submit Hint"
             android:src="@drawable/ic_lightbulb"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorPrimary"
+            app:fab_colorPressed="@color/colorPrimaryDark"/>
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/btnWriteMessage"
             app:fab_label="Write Message"
             android:src="@drawable/ic_insert_comment_black_24dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorPrimary"
+            app:fab_colorPressed="@color/colorPrimaryDark"/>
 
     </com.github.clans.fab.FloatingActionMenu>
 
