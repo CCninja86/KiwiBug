@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 
 import nz.kiwidevs.kiwibug.TagFoundActivity;
 
@@ -45,14 +46,24 @@ public class NdefReaderTask extends AsyncTask<Tag,Void,String> {
         NdefMessage ndefMessage = ndef.getCachedNdefMessage();
         NdefRecord[] records = ndefMessage.getRecords();
 
-        for(NdefRecord ndefRecord : records){
+        for(int i = 0; i < records.length; i++){
+            NdefRecord ndefRecord = records[0];
            // if(ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(),NdefRecord.RTD_TEXT)){
+            //Check first if the first record is from Type Media
+
             if(ndefRecord.getTnf() == NdefRecord.TNF_MIME_MEDIA){
-                try{
-                    return readText(ndefRecord);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                for(int j = i+1; j < records.length;j++){
+                    if(Arrays.equals(records[j].getType(),NdefRecord.RTD_TEXT)){
+                        try{
+                            return readText(records[j]);
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
+
+
+
             }
         }
         return null;
@@ -63,7 +74,7 @@ public class NdefReaderTask extends AsyncTask<Tag,Void,String> {
     private String readText(NdefRecord record) throws UnsupportedEncodingException {
 
         byte[] payload = record.getPayload();
-    /*
+
         // Get the Text Encoding
         String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
 
@@ -75,8 +86,8 @@ public class NdefReaderTask extends AsyncTask<Tag,Void,String> {
 
         // Get the Text
         return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
-        */
-        return new String(payload);
+
+       //return new String(payload);
     }
 
 

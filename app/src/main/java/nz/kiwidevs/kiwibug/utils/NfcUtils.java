@@ -107,6 +107,7 @@ public class NfcUtils {
 
     public void disableForegroundDispatch(){
         //@TODO Implement disableForegroundDispatch
+        mAdapter.disableForegroundDispatch((Activity) context);
     }
 
 

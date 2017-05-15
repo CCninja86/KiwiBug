@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Kiwi Bug</string>
     <string name="title_activity_main">Kiwi Bug</string>
-    <string name="title_activity_tag">Tag Activity</string>
+    <string name="title_activity_tag">You\'ve found a new Tag!</string>
 
 
     <string name="hello_blank_fragment">Hello blank fragment</string>

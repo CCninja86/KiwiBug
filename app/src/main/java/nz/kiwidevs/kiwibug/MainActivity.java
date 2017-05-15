@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements MapsFragment.OnFr
 
         nfcutils.getTagInfoForIntent(getIntent());
 
+
+
     }
 
     @Override
@@ -111,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements MapsFragment.OnFr
     @Override
     protected void onPause(){
         super.onPause();
+
+        nfcutils.disableForegroundDispatch();
     }
 
     @Override

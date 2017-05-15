@@ -58,7 +58,9 @@
         </activity>
         <activity
             android:name=".TagFoundActivity"
-            android:label="@string/title_activity_tag">
+            android:label="@string/title_activity_tag" >
+            <!--android:launchMode="singleTask"-->
+
         </activity>
         <activity
             android:name=".HintActivity"

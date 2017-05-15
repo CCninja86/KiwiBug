@@ -1,11 +1,13 @@
 package nz.kiwidevs.kiwibug;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -37,8 +39,10 @@ public class TagFoundActivity extends AppCompatActivity {
 
         globals = Globals.getInstance();
 
-        double lat = globals.getCurrentLocation().getLatitude();
-        double lng = globals.getCurrentLocation().getLongitude();
+        //if(globals.getCurrentLocation()!=null) {
+            double lat = globals.getCurrentLocation().getLatitude();
+            double lng = globals.getCurrentLocation().getLongitude();
+        //}
 
         Calendar calendar = Calendar.getInstance();
         String year = String.valueOf(calendar.get(Calendar.YEAR));
@@ -183,10 +187,23 @@ public class TagFoundActivity extends AppCompatActivity {
         super.onNewIntent(intent);
 
 
+
+
     }
 
     @Override
     protected void onPause(){
         super.onPause();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+        nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+    }
 }
+
+

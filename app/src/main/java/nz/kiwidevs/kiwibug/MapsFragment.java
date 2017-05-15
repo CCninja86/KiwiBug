@@ -24,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -168,11 +169,12 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
         criteria.setBearingRequired(false);
 
         Location oldLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, true));
-        globals.setCurrentLocation(oldLocation);
+
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
 
+        globals.setCurrentLocation(oldLocation);
 
 
         getLatestTags();
@@ -290,7 +292,8 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
                         TagRecord currentTagLocation = tagRecordArray[0];
 
                         LatLng currentMarkerLatLng = new LatLng(currentTagLocation.getLatitude(),currentTagLocation.getLongitude());
-                        googleMap.addMarker(new MarkerOptions().position(currentMarkerLatLng).title(currentTagLocation.getTagID()));
+                        googleMap.addMarker(new MarkerOptions().position(currentMarkerLatLng).title(currentTagLocation.getTagID()).icon(BitmapDescriptorFactory
+                                .defaultMarker(273)));
 
 
 

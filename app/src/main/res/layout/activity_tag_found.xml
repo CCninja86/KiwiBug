@@ -12,6 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom|right"
+        android:layout_marginBottom="12dp"
+        android:layout_marginRight="12dp"
         app:menu_colorNormal="@color/colorPrimary"
         app:menu_colorPressed="@color/colorPrimaryDark">
 
