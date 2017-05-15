@@ -170,7 +170,36 @@ public class TagFoundActivity extends AppCompatActivity {
         floatingActionButtonWriteMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Write message to record index 1 (second record) of scanned NFC Tag
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Write Message");
+                builder.setMessage("Enter your message below");
+
+                final EditText input = new EditText(context);
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+
+                builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        progressDialog = new ProgressDialog(context);
+                        progressDialog.setMessage("Scan NFC Tag");
+                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        progressDialog.setIndeterminate(true);
+                        progressDialog.setCancelable(false);
+                        progressDialog.show();
+
+                        // TODO: Write message to record index 1 (second record) of scanned NFC Tag, then display success message to user
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.show();
             }
         });
 
