@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+import com.github.clans.fab.FloatingActionButton;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -106,7 +107,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
 
         globals = Globals.getInstance();
 
-        Button buttonHints = (Button) view.findViewById(R.id.buttonHints);
+        FloatingActionButton buttonHints = (FloatingActionButton) view.findViewById(R.id.buttonHints);
         buttonHints.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

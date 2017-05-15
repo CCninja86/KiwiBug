@@ -1,8 +1,8 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="nz.kiwidevs.kiwibug.MapsFragment">
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -12,15 +12,22 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/buttonHints" />
 
-    <Button
+    <com.github.clans.fab.FloatingActionButton
         android:id="@+id/buttonHints"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:background="@color/colorAccent"
-        android:text="View Hints" />
-</RelativeLayout>
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="12dp"
+        android:layout_marginRight="12dp"
+        android:src="@drawable/ic_lightbulb"
+        fab:fab_colorNormal="@color/colorPrimary"
+        fab:fab_colorPressed="@color/colorPrimaryDark"
+        />
+
+
+
+
+
+
+
+</FrameLayout>
