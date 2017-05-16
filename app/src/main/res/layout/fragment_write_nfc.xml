@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/nfcwrite_margin"
+    android:weightSum="1">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/write_tag_message"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/nfcwrite_margin"
+        android:layout_weight="0.09"
+        android:adjustViewBounds="false"
+        android:cropToPadding="false"
+        android:scaleType="fitStart"
+        android:src="@mipmap/kiwi_icon" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/nfcwrite_margin"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tap_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/nfcwrite_margin"
+        android:text="@string/tap_tag_message"
+        android:textAlignment="center" />
+
+</LinearLayout>

@@ -7,8 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.support.annotation.RequiresPermission;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -23,12 +26,19 @@ import com.koushikdutta.ion.Ion;
 
 import java.util.Calendar;
 
-public class TagFoundActivity extends AppCompatActivity {
+import nz.kiwidevs.kiwibug.utils.NfcUtils;
+
+public class TagFoundActivity extends AppCompatActivity implements WriteNFCFragment.OnFragmentInteractionListener  {
 
     TextView nfcUserMsg;
     private ProgressDialog progressDialog;
     private Globals globals;
     private Activity context;
+    private FragmentTransaction fragmentTransaction;
+    private EditText inputNfcMessage;
+    WriteNFCFragment nfcFragment;
+    boolean isWrite, isDialogDisplayed;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +52,7 @@ public class TagFoundActivity extends AppCompatActivity {
         //if(globals.getCurrentLocation()!=null) {
             double lat = globals.getCurrentLocation().getLatitude();
             double lng = globals.getCurrentLocation().getLongitude();
-        //}
+       // }
 
         Calendar calendar = Calendar.getInstance();
         String year = String.valueOf(calendar.get(Calendar.YEAR));
@@ -174,7 +184,42 @@ public class TagFoundActivity extends AppCompatActivity {
         floatingActionButtonWriteMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Write message to record index 1 (second record) of scanned NFC Tag
+                isWrite = true;
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Write a Message on the Tag");
+                builder.setMessage("Enter your message below");
+
+                inputNfcMessage = new EditText(context);
+                inputNfcMessage.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(inputNfcMessage);
+
+                builder.setPositiveButton("Write",new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        nfcFragment = (WriteNFCFragment) getSupportFragmentManager().findFragmentByTag(WriteNFCFragment.TAG);
+
+                        if(nfcFragment == null){
+                            nfcFragment = WriteNFCFragment.newInstance();
+                        }
+
+                        nfcFragment.show(getSupportFragmentManager(),WriteNFCFragment.TAG);
+
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.show();
+
+
             }
         });
 
@@ -186,7 +231,15 @@ public class TagFoundActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent){
         super.onNewIntent(intent);
 
+        if(isWrite){
+            if(isDialogDisplayed){
 
+                nfcFragment = (WriteNFCFragment) getSupportFragmentManager().findFragmentByTag(WriteNFCFragment.TAG);
+               nfcFragment.onNFCTagDetected(intent, inputNfcMessage.getText().toString());
+
+
+            }
+        }
 
 
     }
@@ -203,6 +256,18 @@ public class TagFoundActivity extends AppCompatActivity {
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+    }
+
+
+    @Override
+    public void onDialogDisplayed() {
+        isDialogDisplayed = true;
+    }
+
+    @Override
+    public void onDialogDismissed() {
+        isDialogDisplayed = false;
+        isWrite = false;
     }
 }
 

@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "nz.kiwidevs.kiwibug"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -24,6 +24,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.google.android.gms:play-services-maps:10.2.1'
@@ -32,6 +33,5 @@ dependencies {
     compile 'com.android.support:design:25.3.1'
     compile 'com.koushikdutta.ion:ion:2.+'
     compile 'com.github.clans:fab:1.6.4'
-
     testCompile 'junit:junit:4.12'
 }

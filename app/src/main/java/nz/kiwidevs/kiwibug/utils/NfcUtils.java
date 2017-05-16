@@ -5,10 +5,17 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.nfc.FormatException;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
+import android.util.Log;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by Michael on 07.05.2017.
@@ -100,6 +107,63 @@ public class NfcUtils {
 
         }
     }
+
+    public static boolean writeMessageToTag(Intent intent, String text){
+        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+
+        if(tag != null) {
+
+            Ndef ndef = Ndef.get(tag);
+
+            NdefRecord[]records = new NdefRecord[2];
+
+            //@TODO: Implement TagIDs!
+            records[0] = NdefRecord.createMime("app/kb","KiwiBug".getBytes());
+            records[1] = createTextRecord("en", text);
+
+            NdefMessage message = new NdefMessage(records);
+
+            try {
+
+            ndef.connect();
+            ndef.writeNdefMessage(message);
+            ndef.close();
+
+                return true;
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
+
+            } catch (FormatException e) {
+
+                e.printStackTrace();
+
+            }
+
+        }
+            return false;
+    }
+
+    private static NdefRecord createTextRecord(String language, String text) {
+        byte[] languageBytes;
+        byte[] textBytes;
+        try {
+            languageBytes = language.getBytes("US-ASCII");
+            textBytes = text.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
+
+        byte[] recordPayload = new byte[1 + (languageBytes.length & 0x03F) + textBytes.length];
+
+        recordPayload[0] = (byte)(languageBytes.length & 0x03F);
+        System.arraycopy(languageBytes, 0, recordPayload, 1, languageBytes.length & 0x03F);
+        System.arraycopy(textBytes, 0, recordPayload, 1 + (languageBytes.length & 0x03F), textBytes.length);
+
+        return new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, null, recordPayload);
+    }
+
 
     public void enableForegroundDispatch(){
         mAdapter.enableForegroundDispatch((Activity)context, nfcPendingIntent, null, null);

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Kiwi Bug</string>
     <string name="title_activity_main">Kiwi Bug</string>
-    <string name="title_activity_tag">You\'ve found a new Tag!</string>
+    <string name="title_activity_tag">You\'ve found a new KiwiBug!</string>
 
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -10,6 +10,8 @@
     <string name="lastFinderText">The last finder left you this message:</string>
     <string name="NoMsgOnTag">Sorry, no message left!</string>
     <string name="title_activity_hint">HintActivity</string>
+    <string name="write_tag_message">Write to KiwiBug!</string>
+    <string name="tap_tag_message">Tap the KiwiBug to your device to leave your own message!</string>
 
 
 </resources>
