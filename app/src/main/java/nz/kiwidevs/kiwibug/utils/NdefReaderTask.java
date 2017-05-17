@@ -18,13 +18,14 @@ import nz.kiwidevs.kiwibug.TagFoundActivity;
  * Created by Michael on 07.05.2017.
  */
 
-public class NdefReaderTask extends AsyncTask<Tag,Void,String> {
+public class NdefReaderTask extends AsyncTask<Tag,Void,String[]> {
 
     WeakReference<Activity> mWeakActivity;
 
 
     public NdefReaderTask(Activity mainActivity){
         mWeakActivity = new WeakReference<Activity>(mainActivity);
+
 
     }
 
@@ -34,8 +35,9 @@ public class NdefReaderTask extends AsyncTask<Tag,Void,String> {
      * @return Content of the tag
      */
     @Override
-    protected String doInBackground(Tag... params) {
+    protected String[] doInBackground(Tag... params) {
         Tag tag = params[0];
+        String[] tagData = new String[2];
 
         Ndef ndef = Ndef.get(tag);
 
@@ -52,19 +54,26 @@ public class NdefReaderTask extends AsyncTask<Tag,Void,String> {
             //Check first if the first record is from Type Media
 
             if(ndefRecord.getTnf() == NdefRecord.TNF_MIME_MEDIA){
+
+
+                    tagData[0] = readID(ndefRecord);
+
+
                 for(int j = i+1; j < records.length;j++){
-                    if(Arrays.equals(records[j].getType(),NdefRecord.RTD_TEXT)){
+                    //if(Arrays.equals(records[j].getType(),NdefRecord.RTD_TEXT)){
                         try{
-                            return readText(records[j]);
+                            tagData[1] = readText(records[j]);
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
-                    }
+                   // }
                 }
-
-
-
             }
+
+            return tagData;
+
+
+
         }
         return null;
 
@@ -75,10 +84,10 @@ public class NdefReaderTask extends AsyncTask<Tag,Void,String> {
 
         byte[] payload = record.getPayload();
 
-        // Get the Text Encoding
+        // Text Encoding
         String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
 
-        // Get the Language Code
+        // Language Code
         int languageCodeLength = payload[0] & 0063;
 
         // String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
@@ -90,6 +99,12 @@ public class NdefReaderTask extends AsyncTask<Tag,Void,String> {
        //return new String(payload);
     }
 
+    private String readID(NdefRecord record){
+        byte[] payload = record.getPayload();
+
+        return new String(payload);
+    }
+
 
 
     @Override
@@ -97,7 +112,7 @@ public class NdefReaderTask extends AsyncTask<Tag,Void,String> {
      NFC Tag has been read, update the UI from here
 
      **/
-    protected void onPostExecute(String result) {
+    protected void onPostExecute(String[] result) {
         if(result != null){
 
             Intent myIntent = new Intent(mWeakActivity.get(), TagFoundActivity.class);

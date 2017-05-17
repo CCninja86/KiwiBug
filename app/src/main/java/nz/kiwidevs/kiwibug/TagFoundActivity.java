@@ -14,7 +14,9 @@ import android.support.annotation.RequiresPermission;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -38,6 +40,7 @@ public class TagFoundActivity extends AppCompatActivity implements WriteNFCFragm
     private EditText inputNfcMessage;
     WriteNFCFragment nfcFragment;
     boolean isWrite, isDialogDisplayed;
+    static boolean isReturningFromWrite;
 
 
     @Override
@@ -87,39 +90,49 @@ public class TagFoundActivity extends AppCompatActivity implements WriteNFCFragm
         SharedPreferences sharedPreferences = getSharedPreferences("nz.kiwidevs.kiwibug.SHARED", Context.MODE_PRIVATE);
         final String username = sharedPreferences.getString("username", "anonymous");
 
-        String tagID = "test";
-
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Updating Tag Location...");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-
-        String url = "http://netweb.bplaced.net/kiwibug/api.php?action=insertTagData&lat=" + lat + "&lng=" + lng + "&username=" + username + "&id=" + tagID + "";
-
-        Ion.with(this)
-                .load(url)
-                .asString()
-                .setCallback(new FutureCallback<String>() {
-                    @Override
-                    public void onCompleted(Exception e, String result) {
-                        if(progressDialog != null && progressDialog.isShowing()){
-                            progressDialog.dismiss();
-                            progressDialog = null;
-                        }
-
-                        if(result.equals("success")){
-                            Toast.makeText(getApplicationContext(), "Tag Location Updated", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Failed to update Tag Location", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
 
         nfcUserMsg = (TextView) findViewById(R.id.nfcUserMsg);
-        String userMsg = getIntent().getStringExtra("nfcData");
-        nfcUserMsg.setText(userMsg);
+        String[] userMsg = getIntent().getStringArrayExtra("nfcData");
+        nfcUserMsg.setText(userMsg[1]);
+
+        String tagID = userMsg[0];
+
+
+
+        Log.d("TagFoundActivity", "Before network block isWrite:" + isReturningFromWrite);
+        if(!isReturningFromWrite) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("Updating Tag Location...");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            String url = "http://netweb.bplaced.net/kiwibug/api.php?action=insertTagData&lat=" + lat + "&lng=" + lng + "&username=" + username + "&id=" + tagID + "";
+
+            Log.d("TagFoundActivity", "In network block isWrite:" + isReturningFromWrite);
+
+            Ion.with(this)
+                    .load(url)
+                    .asString()
+                    .setCallback(new FutureCallback<String>() {
+                        @Override
+                        public void onCompleted(Exception e, String result) {
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                                progressDialog = null;
+                            }
+
+                            if (result.equals("success")) {
+                                Toast.makeText(getApplicationContext(), "Tag Location Updated", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Failed to update Tag Location", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+            isReturningFromWrite = true;
+
+        }
 
 
         FloatingActionButton floatingActionButtonSubmitHint = (FloatingActionButton) findViewById(R.id.btnSubmitHint);
@@ -185,6 +198,7 @@ public class TagFoundActivity extends AppCompatActivity implements WriteNFCFragm
             @Override
             public void onClick(View v) {
                 isWrite = true;
+                isReturningFromWrite = true;
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Write a Message on the Tag");
@@ -192,6 +206,7 @@ public class TagFoundActivity extends AppCompatActivity implements WriteNFCFragm
 
                 inputNfcMessage = new EditText(context);
                 inputNfcMessage.setInputType(InputType.TYPE_CLASS_TEXT);
+                inputNfcMessage.setFilters(new InputFilter[] {new InputFilter.LengthFilter(110)});
                 builder.setView(inputNfcMessage);
 
                 builder.setPositiveButton("Write",new DialogInterface.OnClickListener() {
@@ -233,9 +248,15 @@ public class TagFoundActivity extends AppCompatActivity implements WriteNFCFragm
 
         if(isWrite){
             if(isDialogDisplayed){
+                NfcUtils.getTagIDFromTag(this, intent);
+
+                String[] userMsg = getIntent().getStringArrayExtra("nfcData");
+
+
 
                 nfcFragment = (WriteNFCFragment) getSupportFragmentManager().findFragmentByTag(WriteNFCFragment.TAG);
-               nfcFragment.onNFCTagDetected(intent, inputNfcMessage.getText().toString());
+               nfcFragment.onNFCTagDetected(intent, inputNfcMessage.getText().toString(),userMsg[0]);
+
 
 
             }
@@ -247,7 +268,10 @@ public class TagFoundActivity extends AppCompatActivity implements WriteNFCFragm
     @Override
     protected void onPause(){
         super.onPause();
+
+
     }
+
 
     @Override
     protected void onResume() {
@@ -256,7 +280,10 @@ public class TagFoundActivity extends AppCompatActivity implements WriteNFCFragm
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+
     }
+
+
 
 
     @Override
@@ -268,6 +295,9 @@ public class TagFoundActivity extends AppCompatActivity implements WriteNFCFragm
     public void onDialogDismissed() {
         isDialogDisplayed = false;
         isWrite = false;
+
+        finish();
+
     }
 }
 

@@ -108,17 +108,49 @@ public class NfcUtils {
         }
     }
 
-    public static boolean writeMessageToTag(Intent intent, String text){
+    public static void getTagIDFromTag(Activity context, Intent intent){
+        String action = intent.getAction();
+
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
+
+            String type = intent.getType();
+
+            if ("app/kb".equals(type)) {
+
+
+                Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+
+                new NdefReaderTask((Activity) context).execute(tag);
+
+
+
+            }
+
+
+        }
+    }
+
+    public static boolean writeMessageToTag(Intent intent, String text, String tagID){
         Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+
+
 
         if(tag != null) {
 
+
             Ndef ndef = Ndef.get(tag);
+
+            if(ndef == null){
+                return false;
+            }
+
+
 
             NdefRecord[]records = new NdefRecord[2];
 
             //@TODO: Implement TagIDs!
-            records[0] = NdefRecord.createMime("app/kb","KiwiBug".getBytes());
+            Log.d("NfcUtils", tagID);
+            records[0] = NdefRecord.createMime("app/kb",tagID.getBytes());
             records[1] = createTextRecord("en", text);
 
             NdefMessage message = new NdefMessage(records);
@@ -162,6 +194,21 @@ public class NfcUtils {
         System.arraycopy(textBytes, 0, recordPayload, 1 + (languageBytes.length & 0x03F), textBytes.length);
 
         return new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, null, recordPayload);
+    }
+
+    private static String readText(NdefRecord record) throws UnsupportedEncodingException {
+        byte[] payload = record.getPayload();
+
+        String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
+
+
+        int languageCodeLength = payload[0] & 0063;
+
+        //String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
+        // e.g. "en"
+
+        // Get the Text
+        return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
     }
 
 

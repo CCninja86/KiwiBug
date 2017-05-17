@@ -173,7 +173,8 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment implemen
                             tagRecordArrayList.add(tagRecord);
 
                             LatLng currentMarkerLatLng = new LatLng(tagRecord.getLatitude(),tagRecord.getLongitude());
-                            googleMap.addMarker(new MarkerOptions().position(currentMarkerLatLng).title(tagRecord.getID() + " " + tagRecord.getTagID()));
+                            googleMap.addMarker(new MarkerOptions().position(currentMarkerLatLng).title(tagRecord.getID() + " " + tagRecord.getTagID()).icon(BitmapDescriptorFactory
+                                    .defaultMarker(273)));
 
                             //Log.d("TagDetails",tagRecord.getID() + " " + tagRecord.getTagTime());
 

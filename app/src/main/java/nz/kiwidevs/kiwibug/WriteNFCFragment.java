@@ -95,11 +95,11 @@ public class WriteNFCFragment extends DialogFragment {
     }
 
 
-    public void onNFCTagDetected(Intent intent, String text){
+    public void onNFCTagDetected(Intent intent, String text, String tagID){
 
 
 
-        if(NfcUtils.writeMessageToTag(intent, text)){
+        if(NfcUtils.writeMessageToTag(intent, text,tagID)){
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -111,6 +111,9 @@ public class WriteNFCFragment extends DialogFragment {
             dismiss();
 
 
+        }else{
+            Toast.makeText(getActivity(),"Could not write message, please try again",Toast.LENGTH_LONG).show();
+            dismiss();
         }
 
     }
