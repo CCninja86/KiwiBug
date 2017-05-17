@@ -267,7 +267,7 @@ public class TagFoundActivity extends AppCompatActivity implements WriteNFCFragm
     protected void onPause(){
         super.onPause();
 
-
+        isReturningFromWrite = false;
     }
 
 
