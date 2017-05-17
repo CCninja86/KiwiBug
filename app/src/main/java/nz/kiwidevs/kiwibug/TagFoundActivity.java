@@ -266,10 +266,14 @@ public class TagFoundActivity extends AppCompatActivity implements WriteNFCFragm
     @Override
     protected void onPause(){
         super.onPause();
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
 
         isReturningFromWrite = false;
     }
-
 
     @Override
     protected void onResume() {
