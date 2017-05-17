@@ -60,7 +60,8 @@
             android:layout_below="@+id/congrats"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
-            android:text="@string/lastFinderText" />
+            android:text="@string/lastFinderText"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/nfcUserMsg"
