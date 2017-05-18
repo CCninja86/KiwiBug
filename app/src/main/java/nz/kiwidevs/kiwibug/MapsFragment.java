@@ -1,9 +1,12 @@
 package nz.kiwidevs.kiwibug;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -106,6 +109,29 @@ public class MapsFragment extends android.support.v4.app.Fragment implements Loc
         getActivity().setTitle("Locate Tags");
 
         globals = Globals.getInstance();
+
+        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("nz.kiwidevs.kiwibug.SHARED", Context.MODE_PRIVATE);
+        boolean showTutorial = sharedPreferences.getBoolean("show_map_fragment_tutorial", true);
+        String username = sharedPreferences.getString("username", null);
+
+        if (showTutorial) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Welcome to Kiwi Bug, " + username + "!");
+            builder.setMessage("Quick Hint: To see the path/route that a particular tag has taken on it's journey, simply tap it's marker on this screen, and you will" +
+                    " be taken to another screen with full details on that particular tag's location history!");
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean("show_map_fragment_tutorial", false);
+                    editor.commit();
+                }
+            });
+
+            builder.show();
+
+        }
 
         FloatingActionButton buttonHints = (FloatingActionButton) view.findViewById(R.id.buttonHints);
         buttonHints.setOnClickListener(new View.OnClickListener() {

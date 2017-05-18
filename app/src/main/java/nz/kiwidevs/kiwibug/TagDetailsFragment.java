@@ -1,7 +1,10 @@
 package nz.kiwidevs.kiwibug;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -106,6 +109,27 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment implemen
         View view = inflater.inflate(R.layout.fragment_tag_details, container, false);
 
         getActivity().setTitle("Tag Details");
+
+        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("nz.kiwidevs.kiwibug.SHARED", Context.MODE_PRIVATE);
+        boolean showTutorial = sharedPreferences.getBoolean("show_tag_details_tutorial", true);
+
+        if(showTutorial){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Tag Details");
+            builder.setMessage("To jump to a particular point in the tag's path/route, just tap a location in the list at the bottom of the screen, and the map will automatically " +
+                    "zoom in on that point");
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean("show_tag_details_tutorial", false);
+                    editor.commit();
+                }
+            });
+
+            builder.show();
+        }
 
         tagDetailsFragment = this;
 

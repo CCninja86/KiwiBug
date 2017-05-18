@@ -40,5 +40,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:background="@color/colorPrimary"
+        android:textColor="#FFFFFFFF"
         android:text="Continue" />
 </RelativeLayout>

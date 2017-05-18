@@ -1,5 +1,6 @@
 package nz.kiwidevs.kiwibug;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -75,11 +76,24 @@ public class NewUserFragment extends android.support.v4.app.Fragment {
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ProgressDialog progressDialog = new ProgressDialog(getActivity());
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setCancelable(false);
+                progressDialog.setMessage("Loading...");
+                progressDialog.show();
+
                 if(editTextUsername.getText().toString().length() <= 20){
                     SharedPreferences sharedPreferences = getActivity().getSharedPreferences("nz.kiwidevs.kiwibug.SHARED", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("username", editTextUsername.getText().toString());
+                    editor.putBoolean("first_time", false);
                     editor.commit();
+
+                    if(progressDialog != null && progressDialog.isShowing()){
+                        progressDialog.dismiss();
+                        progressDialog = null;
+                    }
 
                     mListener.onNewUserFragmentInteraction("continue");
                 }

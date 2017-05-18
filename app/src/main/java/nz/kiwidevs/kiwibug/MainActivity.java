@@ -135,9 +135,6 @@ public class MainActivity extends AppCompatActivity implements MapsFragment.OnFr
             fragmentTransaction.add(R.id.container, newUserFragment);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("first_time", false);
-            editor.commit();
         } else {
             MapsFragment mapsFragment = new MapsFragment();
             fragmentTransaction = getSupportFragmentManager().beginTransaction();
