@@ -207,10 +207,6 @@ public class TagDetailsFragment extends android.support.v4.app.Fragment implemen
 
 
 
-                        //listViewLocationHistory
-
-
-
 
                         googleMap.addPolyline(poly);
 

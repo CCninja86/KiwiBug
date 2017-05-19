@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -71,7 +72,13 @@ public class MainActivity extends AppCompatActivity implements MapsFragment.OnFr
         switch (requestCode){
             case PERMISSION_FINE_LOCATION:
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    startApp();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            startApp();
+                        }
+                    }, 200);
+
                 } else {
 
                 }
@@ -121,7 +128,6 @@ public class MainActivity extends AppCompatActivity implements MapsFragment.OnFr
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        Log.d("Main", "I get executed onNewIntent");
         nfcutils.getTagInfoForIntent(intent);
     }
 
