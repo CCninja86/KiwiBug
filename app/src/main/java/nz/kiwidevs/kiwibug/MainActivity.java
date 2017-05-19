@@ -15,7 +15,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import nz.kiwidevs.kiwibug.utils.NfcUtils;
 
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements MapsFragment.OnFr
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            startApp();
+                        startApp();
                         }
                     }, 200);
 
